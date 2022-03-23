@@ -12,7 +12,7 @@
 #include "parameter.h"
 #include "ode_solver.h"
 
-// Definition of the ODE functions
+/* Function definitions */
 template <typename T>
 extern double diff_eq_1(const T t, const std::vector<T> variables, const std::vector<parameter<T>> parameters){
     double v = variables[1];
@@ -39,7 +39,6 @@ extern double variable1_init(const T t, const std::vector<T> variables, const st
 template <typename T>
 extern double bisection_function(const T t, const std::vector<T> variables, const std::vector<parameter<T>> parameters){
     //double omega = parameters[0].value;
-    //double x = variables[0];
     double v = variables[1];
     return v - 1.;
 }
@@ -55,10 +54,10 @@ extern bool exit_function(const T t, const std::vector<T> variables, const std::
 }
 #endif
 
-// Communicate the definitions to the ODE solver
+/* Communicate the definitions to the solver */
 void ode_solver::communicate_to_solver(){
 
-    // Assign the function, the initial condition and the name of the variables
+    /* Assign the function, the initial condition and the name of the variables */
     odes[0].diff_eq = diff_eq_1<double>;
     odes[0].var0 = M_PI_4;
     odes[0].var_name = "x";
@@ -69,17 +68,17 @@ void ode_solver::communicate_to_solver(){
     odes[1].var_name = "v";
     odes[1].var0 = 1.;
 
-    // Assign the function, the initial condition and the name of the variables
+    /* Assign the function, the initial condition and the name of the variables */
     parameters[0].value = 1.;
     parameters[0].name = "omega";
 
 #ifdef EXIT_CONDITION
-    // Assign the exit condition function
+    /* Assign the exit condition function */
     exit_condition = exit_function<double>;
 #endif
 
 #ifdef BISECTION
-    // Assign the bisection target function
+    /* Assign the bisection target function */
     bisection_target = bisection_function<double>;
 #endif
 

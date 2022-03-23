@@ -66,7 +66,7 @@ ode_solver::ode_solver(double t0, double t1) {
 #if BISECTION==0
     bisection_check_variables();
 #endif
-    bisection(-100.,10.,0.001);
+    bisection(BISECTION_MIN, BISECTION_MAX, BISECTION_PRECISION);
 #else
     init_conditions();
 #endif
@@ -124,7 +124,7 @@ void ode_solver::rk4_step(double & t, const double h){
 
 }
 
-// This divides an interval in a logarithmic scale of basis 10, and store results in input vector v
+/* This divides an interval in a logarithmic scale of basis 10, and store results in input vector v */
 void ode_solver::time_log10(std::vector<double> & v, double A, double B, int points){
 
     double a = log10(A);
@@ -219,18 +219,23 @@ bool ode_solver::bisection(double min, double max, double precision){
         rk4_C = rk4_solver(true);
 
         if(rk4_min * rk4_C >= 0) {
-            min=C;
+            min = C;
         }
         else {
-            max=C;
+            max = C;
         }
-
-        C = (max+min)/2.;
 
         std::cout << std::setprecision(4) << std::scientific
                   << "\tmin: " << min << " max: " << max << " C: "<< C
                   << " rk4_min: " << rk4_min << " rk4_C: " << rk4_C << std::endl;
 
+        C = (max+min)/2.;
+
+    }
+
+    if(max==BISECTION_MAX || min==BISECTION_MIN){
+        std::cerr << "The range used for bisection seems not to include the result." << std::endl;
+        return false;
     }
 
     C = (max+min)/2.;
